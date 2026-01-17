@@ -1,0 +1,21 @@
+{
+  "name": "Goodreads to Libby Checker",
+  "short_name": "Libby Checker",
+  "description": "Check Libby wait times for your Goodreads books",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4F46E5",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192'%3E%3Crect width='192' height='192' fill='%234F46E5'/%3E%3Cpath d='M106 72c0 4.6 3.4 7.6 7.6 7.6 8.4-1.2 13.2-12.4 14.4-23.6 24.4 0-4.4 3.6-1.2 6.4-2.4 7.4-4.2 8.2-74 2.4-8.2 0-1.2 1.2-2.4 2.4-3.6 2.4-7.4 0-11.2 10.8-19.2 24-40s14.4 12.4 23.6 24-4.4 3.6-1.2 6.4-2.4 7.4-4.2 8.2-3.6-8.8-10-15.4-18.0 23.4-24z' fill='%23fff'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Crect width='512' height='512' fill='%234F46E5'/%3E%3Cpath d='M284 194c0 12.2 9.8 21.4 20.4 21.4 22.3-3.2 35.2-33.2 38.4-63.2 66.8-63.2 0-11.8 9.6-3.2 17.1-6.4 19.8-11.2 22.0-197.6 6.4-22.0 0-3.2 3.2-6.4 6.4-9.6 6.4-19.8 0-29.9 28.8-51.2 64-106.4s38.4 33.0 63.2 64-11.8 9.6-3.2 17.1-6.4 19.8-11.2 22.0-9.6-23.5-26.7-41.1-48.0 62.4-64z' fill='%23fff'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

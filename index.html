@@ -8,31 +8,57 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Libby Checker">
-  <title>Goodreads to Libby Checker</title>
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkdvb2RyZWFkcyB0byBMaWJieSBDaGVja2VyIiwKICAic2hvcnRfbmFtZSI6ICJMaWJieSBDaGVja2VyIiwKICAiZGVzY3JpcHRpb24iOiAiQ2hlY2sgTGliYnkgd2FpdCB0aW1lcyBmb3IgeW91ciBHb29kcmVhZHMgYm9va3MiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIsCiAgInRoZW1lX2NvbG9yIjogIiM0RjQ2RTUiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LFBITjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXhPVElpSUdobGFXZG9kRDBpTVRreUlqNDhjbVZqZENCM2FXUjBhRDBpTVRreUlpQm9aV2xuYUhROUlqRTVNaUlnWm1sc2JEMGlJelJHTkRaRk5TSXZQanh3WVhSb0lHUTlJazB4TURZZ056SmpNQ0EwTGpZZ015NDBJRGN1TmlBM0xqWWdOeTQySURndU5DMHhMaklnTVRNdU1pMHhNaTQwSURFMExqUXRNak11TmlBeU5DNDBJREF0TVM0eUlERXVNaTB5TGpRZ01pNDBMVE11TmlBeUxqUXROeTQwSURJdU5DMDRMaklnTUMweExqSXRNUzR5TFRJdU5DMHlMalF0TXk0MkxUSXVOQzAzTGpRZ01DMHhNUzR5SURFd0xqZ3RNVGt1TWlBeU5DMDBNSE14TkM0MElERXlMalFnTWpNdU5pQXlOQzAwTGpRZ015NDJMVEV1TWlBMkxqUXRNaTQwSURjdU5DMDBMaklnT0M0eUxUYzBJREl1TkMwNExqSWdNaTAwTGpZZ015NDBMVGN1TmlBM0xqWXROeTQySURndU5DQXRMVE11TmlBNExqZ3RNVEFnTVRVdU5DMHhPQzR3SURJekxqUXRNalF1TkNBemVrMDRNaUExTm1ndE5DMnhNaUF3SURBdE1USWdNVEFnTUNBd0lERXlMVEV3SURBZ01DMHhNaTB4TUNCd0lpQm1hV3hzUFNJamRtWm1JaTgrUEM5emRtYytJaUIwZVhCbFBTSnBiV0ZuWlM5emRtY3JlRzFzSWlCM2FXUjBhRDBpTVRreUlpQm9aV2xuYUhROUlqRTVNaUl2UGc9PSIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCNGJXeHVjejBpYUhSMGNEb3ZMM2QzZHk1M015NXZjbWN2TWpBd01DOXpkbWNpSUhkcFpIUm9QU0kxTVRJaUlHaGxhV2RvZEQwaU5URXlJajQ4Y21WamRDQjNhV1IwYUQwaU5URXlJaUJvWldsbmFIUTlJalV4TWlJZ1ptbHNiRDBpSXpSR05EWkZOU0l2UGp4d1lYUm9JR1E5SWsweU9EUWdNVGswWXpBZ01USXVNaUE1TGpnZ01qRXVOQ0F5TUM0MElESXhMalFnTWpJdU15MDNMREF0TkM0MUlETXdMalF0TXpJdU1pQXpPQzQwTFRZekxqa2dOalkuT0MwMk15NDVJREF0TXk0eklEQXRNaTR6TFRFTXVOU0EwTGpJZ015MDRMamtnTmlBdE1USXVOaUF4TkNBdE1Ua3VOaUEySWpBdE15NDVJakVnTVRVdU5TMHhOaTQwSURNeklqUXRNak11T0NBek55NDVMVEkwSURZMkxqZ3RNVE11T0NBNVFPQTVMVEV1T1NBMUxqZ3RNaTQwSURZdU15MHlMakVnTWpFdU5TMHhNUzQ1SURZdU15MHlMakVnTVRJdU15QXdJREU1TGpVdE15QXlOQzQxTFRjeUxqWWdNalF1TlMweE1UZ2dNQzB5TUM0M0xUazBMaklnTmpRdE1qQXdMamN0T1RBdU9TQXhNaTQwSURZdU15QXlNeTR3SURJMExqVWdOVGNnTVRFdU1pQXpNeUE0T0MweUxqWWdOekF1TlMweU5DQXhORE11T0kwM05pQTFNVFpvTFRJMElqSXpOaUF3SURBZ01TMHlOQ0EwTUNBd0lEQWdNUzB5TkMwME1DQXdJREFnTVMweU5DQXlOQ0J3SWlCbWFXeHNQU0lqZG1abUlpOCtQQzl6ZG1jK0lpQjBlWEJsUFNKcGJXRm5aUzl6ZG1jcmVHMXNJaUIzYVdSMGFEMGlOVEV5SWlCb1pXbG5hSFE5SWpVeE1pSXZQZz09IiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+  <title>Libby Checker</title>
+  <link rel="manifest" href="manifest.json">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-    }
-    body {
-      overscroll-behavior: none;
-    }
-    .safe-area-top {
-      padding-top: env(safe-area-inset-top);
-    }
-    .safe-area-bottom {
-      padding-bottom: env(safe-area-inset-bottom);
-    }
+    body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    .animate-spin { animation: spin 1s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
   <div id="root"></div>
   
-  <script type="module">
-    import React, { useState, useEffect } from 'https://cdn.skypack.dev/react@18.2.0';
-    import ReactDOM from 'https://cdn.skypack.dev/react-dom@18.2.0/client';
-    import { Book, Clock, AlertCircle, CheckCircle, Loader, Filter, Upload, Download, Trash2 } from 'https://cdn.skypack.dev/lucide-react@0.263.1';
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <script>
+    const { useState, useEffect, createElement: h } = React;
+
+    // Icon components
+    const BookIcon = () => h('svg', { className: 'w-6 h-6', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' })
+    );
+    
+    const UploadIcon = () => h('svg', { className: 'w-5 h-5', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12' })
+    );
+    
+    const FilterIcon = () => h('svg', { className: 'w-4 h-4', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z' })
+    );
+    
+    const TrashIcon = () => h('svg', { className: 'w-5 h-5', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' })
+    );
+    
+    const LoaderIcon = () => h('svg', { className: 'w-5 h-5 animate-spin', fill: 'none', viewBox: '0 0 24 24' },
+      h('circle', { className: 'opacity-25', cx: 12, cy: 12, r: 10, stroke: 'currentColor', strokeWidth: 4 }),
+      h('path', { className: 'opacity-75', fill: 'currentColor', d: 'M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z' })
+    );
+    
+    const CheckIcon = () => h('svg', { className: 'w-4 h-4', fill: 'currentColor', viewBox: '0 0 20 20' },
+      h('path', { fillRule: 'evenodd', d: 'M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' })
+    );
+    
+    const ClockIcon = () => h('svg', { className: 'w-4 h-4', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' })
+    );
+    
+    const AlertIcon = () => h('svg', { className: 'w-4 h-4', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' })
+    );
 
     function App() {
       const [libraryUrl, setLibraryUrl] = useState('');
@@ -46,7 +72,6 @@
       const [installPrompt, setInstallPrompt] = useState(null);
 
       useEffect(() => {
-        // Load saved data
         const saved = localStorage.getItem('libbyCheckerData');
         if (saved) {
           try {
@@ -56,68 +81,34 @@
             setBooks(data.books || []);
             setAvailableShelves(data.shelves || []);
           } catch (e) {
-            console.error('Failed to load saved data');
+            console.error('Load failed');
           }
         }
 
-        // PWA install prompt
-        window.addEventListener('beforeinstallprompt', (e) => {
-          e.preventDefault();
-          setInstallPrompt(e);
+        window.addEventListener('beforeinstallprompt', (ev) => {
+          ev.preventDefault();
+          setInstallPrompt(ev);
         });
 
-        // Register service worker
         if ('serviceWorker' in navigator) {
-          registerServiceWorker();
+          navigator.serviceWorker.register('sw.js').catch(() => {});
         }
       }, []);
-
-      const registerServiceWorker = async () => {
-        const swCode = `
-          const CACHE_NAME = 'libby-checker-v1';
-          const urlsToCache = ['/'];
-          
-          self.addEventListener('install', (event) => {
-            event.waitUntil(
-              caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
-            );
-          });
-          
-          self.addEventListener('fetch', (event) => {
-            event.respondWith(
-              caches.match(event.request).then((response) => response || fetch(event.request))
-            );
-          });
-        `;
-        
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        const swUrl = URL.createObjectURL(blob);
-        
-        try {
-          await navigator.serviceWorker.register(swUrl);
-        } catch (e) {
-          console.log('Service Worker registration failed');
-        }
-      };
 
       const handleInstall = async () => {
         if (installPrompt) {
           installPrompt.prompt();
-          const { outcome } = await installPrompt.userChoice;
+          await installPrompt.userChoice;
           setInstallPrompt(null);
         }
       };
 
       const saveData = (booksData, shelvesData) => {
-        const data = {
-          libraryUrl,
-          books: booksData,
-          shelves: shelvesData
-        };
+        const data = { libraryUrl, books: booksData, shelves: shelvesData };
         localStorage.setItem('libbyCheckerData', JSON.stringify(data));
       };
 
-      const parseGoodreadsCSV = (text) => {
+      const parseCSV = (text) => {
         const lines = text.split('\n');
         const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
         
@@ -125,7 +116,7 @@
         const authorIdx = headers.findIndex(h => h === 'author' || h === 'author l-f');
         const isbnIdx = headers.findIndex(h => h.includes('isbn'));
         const isbn13Idx = headers.findIndex(h => h === 'isbn13');
-        const shelfIdx = headers.findIndex(h => h === 'bookshelves' || h === 'exclusive shelf');
+        const shelfIdx = headers.findIndex(h => h === 'bookshelves');
         const exclusiveShelfIdx = headers.findIndex(h => h === 'exclusive shelf');
         
         const parsed = [];
@@ -161,11 +152,8 @@
             }
             
             if (shelfIdx >= 0 && cleanValues[shelfIdx]) {
-              const additionalShelves = cleanValues[shelfIdx]
-                .split(',')
-                .map(s => s.trim())
-                .filter(s => s && !bookShelves.includes(s));
-              bookShelves.push(...additionalShelves);
+              const additional = cleanValues[shelfIdx].split(',').map(s => s.trim()).filter(s => s && !bookShelves.includes(s));
+              bookShelves.push.apply(bookShelves, additional);
             }
             
             if (bookShelves.length === 0) {
@@ -178,7 +166,7 @@
             
             parsed.push({
               title: cleanValues[titleIdx],
-              author: cleanValues[authorIdx] || 'Unknown Author',
+              author: cleanValues[authorIdx] || 'Unknown',
               isbn: isbn.replace(/[="]/g, ''),
               shelves: bookShelves
             });
@@ -190,82 +178,118 @@
         setAllBooks(parsed);
         setBooks(parsed);
         saveData(parsed, shelvesArray);
-        return parsed;
       };
 
       const handleFileUpload = (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
-        reader.onload = (event) => {
-          const text = event.target.result;
-          parseGoodreadsCSV(text);
-        };
+        reader.onload = (event) => parseCSV(event.target.result);
         reader.readAsText(file);
       };
 
       const handleShelfToggle = (shelf) => {
         setSelectedShelves(prev => {
-          const newSelection = prev.includes(shelf)
-            ? prev.filter(s => s !== shelf)
-            : [...prev, shelf];
-          
+          const newSelection = prev.includes(shelf) ? prev.filter(s => s !== shelf) : prev.concat([shelf]);
           if (newSelection.length === 0) {
             setBooks(allBooks);
           } else {
-            const filtered = allBooks.filter(book => 
-              book.shelves.some(s => newSelection.includes(s))
-            );
-            setBooks(filtered);
+            setBooks(allBooks.filter(book => book.shelves.some(s => newSelection.includes(s))));
           }
-          
           return newSelection;
         });
       };
 
-      const checkLibbyAvailability = async () => {
+      const checkAvailability = async () => {
         if (!libraryUrl.trim()) {
-          alert('Please enter your library\'s OverDrive URL');
+          alert('Enter library URL');
           return;
         }
-        
         if (books.length === 0) {
-          alert('Please import books first');
+          alert('Import books first');
           return;
         }
 
         setChecking(true);
         setResults([]);
         
+        const libraryKey = libraryUrl.replace(/https?:\/\//, '').split('.')[0];
+        
         for (const book of books) {
-          setCurrentBook(\`\${book.title} by \${book.author}\`);
+          setCurrentBook(book.title + ' by ' + book.author);
           
           try {
-            await new Promise(resolve => setTimeout(resolve, 800));
+            const searchQuery = encodeURIComponent(book.title + ' ' + book.author);
+            const searchUrl = 'https://thunder.api.overdrive.com/v2/libraries/' + libraryKey + '/media?query=' + searchQuery + '&perPage=5';
             
-            const mockResult = {
+            const searchResponse = await fetch(searchUrl);
+            
+            if (!searchResponse.ok) {
+              throw new Error('Search failed');
+            }
+            
+            const searchData = await searchResponse.json();
+            
+            if (!searchData.items || searchData.items.length === 0) {
+              setResults(prev => prev.concat([{
+                title: book.title,
+                author: book.author,
+                error: 'Not found in library'
+              }]));
+              continue;
+            }
+            
+            const media = searchData.items[0];
+            const availUrl = 'https://thunder.api.overdrive.com/v2/libraries/' + libraryKey + '/media/' + media.id + '/availability';
+            const availResponse = await fetch(availUrl);
+            
+            if (!availResponse.ok) {
+              throw new Error('Availability check failed');
+            }
+            
+            const availData = await availResponse.json();
+            
+            const result = {
               title: book.title,
               author: book.author,
-              shelves: book.shelves,
-              audiobook: {
-                available: Math.random() > 0.5,
-                waitTime: Math.random() > 0.5 ? Math.floor(Math.random() * 12) + 1 : 0,
-                copies: Math.floor(Math.random() * 5) + 1,
-                holds: Math.floor(Math.random() * 20)
-              },
-              ebook: {
-                available: Math.random() > 0.5,
-                waitTime: Math.random() > 0.5 ? Math.floor(Math.random() * 8) + 1 : 0,
-                copies: Math.floor(Math.random() * 5) + 1,
-                holds: Math.floor(Math.random() * 15)
-              }
+              audiobook: null,
+              ebook: null
             };
             
-            setResults(prev => [...prev, mockResult]);
+            if (media.type) {
+              const typeId = media.type.id.toLowerCase();
+              
+              if (typeId.includes('audiobook')) {
+                result.audiobook = {
+                  available: availData.available || false,
+                  waitTime: availData.estimatedWaitDays ? Math.ceil(availData.estimatedWaitDays / 7) : 0,
+                  copies: availData.copiesOwned || 0,
+                  holds: availData.numberOfHolds || 0
+                };
+              }
+              
+              if (typeId.includes('ebook')) {
+                result.ebook = {
+                  available: availData.available || false,
+                  waitTime: availData.estimatedWaitDays ? Math.ceil(availData.estimatedWaitDays / 7) : 0,
+                  copies: availData.copiesOwned || 0,
+                  holds: availData.numberOfHolds || 0
+                };
+              }
+            }
+            
+            setResults(prev => prev.concat([result]));
+            
           } catch (error) {
-            console.error('Error checking book:', error);
+            console.error('Error:', error);
+            setResults(prev => prev.concat([{
+              title: book.title,
+              author: book.author,
+              error: error.message
+            }]));
           }
+          
+          await new Promise(resolve => setTimeout(resolve, 1500));
         }
         
         setChecking(false);
@@ -273,7 +297,7 @@
       };
 
       const clearData = () => {
-        if (confirm('Clear all saved data?')) {
+        if (confirm('Clear all data?')) {
           localStorage.removeItem('libbyCheckerData');
           setAllBooks([]);
           setBooks([]);
@@ -284,180 +308,143 @@
         }
       };
 
-      const getWaitTimeDisplay = (format) => {
-        if (!format) return null;
-        
-        if (format.available) {
-          return (
-            <div className="flex items-center gap-2 text-green-600">
-              <CheckCircle className="w-4 h-4" />
-              <span className="font-medium">Available now</span>
-            </div>
-          );
-        } else if (format.waitTime > 0) {
-          return (
-            <div className="flex items-center gap-2 text-orange-600">
-              <Clock className="w-4 h-4" />
-              <span className="font-medium">{format.waitTime} week wait</span>
-              <span className="text-xs text-gray-500">({format.holds} holds)</span>
-            </div>
-          );
-        } else {
-          return (
-            <div className="flex items-center gap-2 text-gray-500">
-              <AlertCircle className="w-4 h-4" />
-              <span className="text-sm">Not available</span>
-            </div>
-          );
-        }
-      };
+      return h('div', { className: 'min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4' },
+        h('div', { className: 'max-w-4xl mx-auto' },
+          installPrompt && h('div', { className: 'mb-4 p-4 bg-indigo-600 text-white rounded-lg shadow-lg' },
+            h('div', { className: 'flex items-center justify-between' },
+              h('div', { className: 'flex-1' },
+                h('p', { className: 'font-medium' }, 'Install App'),
+                h('p', { className: 'text-sm opacity-90' }, 'Add to home screen')
+              ),
+              h('button', {
+                onClick: handleInstall,
+                className: 'px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium'
+              }, 'Install')
+            )
+          ),
 
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 safe-area-top safe-area-bottom">
-          <div className="max-w-4xl mx-auto p-4 pb-20">
-            {installPrompt && (
-              <div className="mb-4 p-4 bg-indigo-600 text-white rounded-lg shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <p className="font-medium">Install App</p>
-                    <p className="text-sm opacity-90">Add to your home screen for quick access</p>
-                  </div>
-                  <button
-                    onClick={handleInstall}
-                    className="px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium ml-4"
-                  >
-                    Install
-                  </button>
-                </div>
-              </div>
-            )}
+          h('div', { className: 'bg-white rounded-lg shadow-lg p-4 mb-4' },
+            h('div', { className: 'flex items-center justify-between mb-4' },
+              h('div', { className: 'flex items-center gap-2' },
+                h(BookIcon),
+                h('h1', { className: 'text-xl font-bold' }, 'Libby Checker')
+              ),
+              allBooks.length > 0 && h('button', {
+                onClick: clearData,
+                className: 'p-2 text-gray-500 hover:text-red-600'
+              }, h(TrashIcon))
+            ),
 
-            <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Book className="w-6 h-6 text-indigo-600" />
-                  <h1 className="text-xl font-bold text-gray-800">Libby Checker</h1>
-                </div>
-                {allBooks.length > 0 && (
-                  <button
-                    onClick={clearData}
-                    className="p-2 text-gray-500 hover:text-red-600 transition"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
+            h('div', { className: 'space-y-4' },
+              h('div', null,
+                h('label', { className: 'block text-sm font-medium mb-2' }, 'Library OverDrive URL'),
+                h('input', {
+                  type: 'text',
+                  placeholder: 'yourlibrary.overdrive.com',
+                  value: libraryUrl,
+                  onChange: e => setLibraryUrl(e.target.value),
+                  className: 'w-full px-4 py-3 border border-gray-300 rounded-lg'
+                })
+              ),
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Library OverDrive URL
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="yourlibrary.overdrive.com"
-                    value={libraryUrl}
-                    onChange={(e) => setLibraryUrl(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base"
-                  />
-                </div>
+              h('div', null,
+                h('label', { className: 'block text-sm font-medium mb-2' }, 'Upload Goodreads CSV'),
+                h('label', { className: 'flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg cursor-pointer hover:bg-indigo-700' },
+                  h(UploadIcon),
+                  h('span', null, 'Choose CSV File'),
+                  h('input', {
+                    type: 'file',
+                    accept: '.csv',
+                    onChange: handleFileUpload,
+                    className: 'hidden'
+                  })
+                ),
+                allBooks.length > 0 && h('p', { className: 'text-sm text-gray-600 mt-2' }, allBooks.length + ' books loaded')
+              ),
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Upload Goodreads CSV
-                  </label>
-                  <label className="flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg cursor-pointer active:bg-indigo-700 transition">
-                    <Upload className="w-5 h-5" />
-                    <span className="font-medium">Choose CSV File</span>
-                    <input
-                      type="file"
-                      accept=".csv"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                    />
-                  </label>
-                  {allBooks.length > 0 && (
-                    <p className="text-sm text-gray-600 mt-2">
-                      {allBooks.length} books loaded
-                    </p>
-                  )}
-                </div>
+              availableShelves.length > 0 && h('div', null,
+                h('label', { className: 'flex items-center gap-2 text-sm font-medium mb-2' },
+                  h(FilterIcon),
+                  'Filter by Shelf'
+                ),
+                h('div', { className: 'flex flex-wrap gap-2' },
+                  availableShelves.map(shelf =>
+                    h('button', {
+                      key: shelf,
+                      onClick: () => handleShelfToggle(shelf),
+                      className: 'px-3 py-2 rounded-full text-sm ' + (selectedShelves.includes(shelf) ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700')
+                    }, shelf)
+                  )
+                ),
+                h('p', { className: 'text-sm text-gray-600 mt-2' }, 'Showing ' + books.length + ' of ' + allBooks.length + ' books')
+              ),
 
-                {availableShelves.length > 0 && (
-                  <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                      <Filter className="w-4 h-4" />
-                      Filter by Shelf
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {availableShelves.map(shelf => (
-                        <button
-                          key={shelf}
-                          onClick={() => handleShelfToggle(shelf)}
-                          className={\`px-3 py-2 rounded-full text-sm transition active:scale-95 \${
-                            selectedShelves.includes(shelf)
-                              ? 'bg-indigo-600 text-white'
-                              : 'bg-gray-200 text-gray-700'
-                          }\`}
-                        >
-                          {shelf}
-                        </button>
-                      ))}
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2">
-                      Showing {books.length} of {allBooks.length} books
-                    </p>
-                  </div>
-                )}
+              h('button', {
+                onClick: checkAvailability,
+                disabled: checking || books.length === 0 || !libraryUrl,
+                className: 'w-full px-6 py-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:bg-gray-300'
+              }, checking ? 'Checking...' : 'Check Libby Availability')
+            ),
 
-                <button
-                  onClick={checkLibbyAvailability}
-                  disabled={checking || books.length === 0 || !libraryUrl}
-                  className="w-full px-6 py-4 bg-green-600 text-white rounded-lg font-medium active:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition text-lg"
-                >
-                  {checking ? 'Checking...' : 'Check Libby Availability'}
-                </button>
-              </div>
+            checking && currentBook && h('div', { className: 'mt-4 p-4 bg-blue-50 rounded-lg flex items-center gap-3' },
+              h(LoaderIcon),
+              h('span', { className: 'text-sm text-blue-800' }, currentBook)
+            )
+          ),
 
-              {checking && currentBook && (
-                <div className="mt-4 p-4 bg-blue-50 rounded-lg flex items-center gap-3">
-                  <Loader className="w-5 h-5 text-blue-600 animate-spin flex-shrink-0" />
-                  <span className="text-sm text-blue-800">{currentBook}</span>
-                </div>
-              )}
-            </div>
-
-            {results.length > 0 && (
-              <div className="bg-white rounded-lg shadow-lg p-4">
-                <h2 className="text-lg font-bold text-gray-800 mb-4">Results</h2>
-                <div className="space-y-3">
-                  {results.map((result, idx) => (
-                    <div key={idx} className="border border-gray-200 rounded-lg p-4">
-                      <h3 className="font-semibold text-gray-800 mb-1">{result.title}</h3>
-                      <p className="text-sm text-gray-600 mb-2">{result.author}</p>
-                      
-                      <div className="space-y-3">
-                        <div>
-                          <div className="text-xs font-medium text-gray-500 uppercase mb-1">Audiobook</div>
-                          {getWaitTimeDisplay(result.audiobook)}
-                        </div>
-                        <div>
-                          <div className="text-xs font-medium text-gray-500 uppercase mb-1">Ebook</div>
-                          {getWaitTimeDisplay(result.ebook)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+          results.length > 0 && h('div', { className: 'bg-white rounded-lg shadow-lg p-4' },
+            h('h2', { className: 'text-lg font-bold mb-4' }, 'Results'),
+            h('div', { className: 'space-y-3' },
+              results.map((r, i) =>
+                h('div', { key: i, className: 'border border-gray-200 rounded-lg p-4' },
+                  h('h3', { className: 'font-semibold mb-1' }, r.title),
+                  h('p', { className: 'text-sm text-gray-600 mb-3' }, r.author),
+                  
+                  r.error ? h('div', { className: 'text-red-600 text-sm flex items-center gap-2' },
+                    h(AlertIcon),
+                    r.error
+                  ) : h('div', { className: 'space-y-2' },
+                    h('div', null,
+                      h('div', { className: 'text-xs text-gray-500 uppercase mb-1' }, 'Audiobook'),
+                      r.audiobook ? (
+                        r.audiobook.available ? h('div', { className: 'flex items-center gap-2 text-green-600' },
+                          h(CheckIcon),
+                          h('span', { className: 'text-sm font-medium' }, 'Available now')
+                        ) : r.audiobook.waitTime > 0 ? h('div', { className: 'flex items-center gap-2 text-orange-600' },
+                          h(ClockIcon),
+                          h('span', { className: 'text-sm' }, r.audiobook.waitTime + ' week wait (' + r.audiobook.holds + ' holds)')
+                        ) : h('div', { className: 'flex items-center gap-2 text-gray-500' },
+                          h(AlertIcon),
+                          h('span', { className: 'text-sm' }, 'Not available')
+                        )
+                      ) : h('div', { className: 'text-sm text-gray-400' }, 'No audiobook format')
+                    ),
+                    h('div', null,
+                      h('div', { className: 'text-xs text-gray-500 uppercase mb-1' }, 'Ebook'),
+                      r.ebook ? (
+                        r.ebook.available ? h('div', { className: 'flex items-center gap-2 text-green-600' },
+                          h(CheckIcon),
+                          h('span', { className: 'text-sm font-medium' }, 'Available now')
+                        ) : r.ebook.waitTime > 0 ? h('div', { className: 'flex items-center gap-2 text-orange-600' },
+                          h(ClockIcon),
+                          h('span', { className: 'text-sm' }, r.ebook.waitTime + ' week wait (' + r.ebook.holds + ' holds)')
+                        ) : h('div', { className: 'flex items-center gap-2 text-gray-500' },
+                          h(AlertIcon),
+                          h('span', { className: 'text-sm' }, 'Not available')
+                        )
+                      ) : h('div', { className: 'text-sm text-gray-400' }, 'No ebook format')
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
       );
     }
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    root.render(h(App));
   </script>
 </body>
 </html>
