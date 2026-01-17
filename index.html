@@ -148,17 +148,18 @@
 
       try {
         const parser = new DOMParser();
-        const xml = parser.parseFromString(xmlContent, 'text/xml');
+        const xml = parser.parseFromString(xmlContent, 'application/xml');
         
         const parserError = xml.querySelector('parsererror');
         if (parserError) {
-          throw new Error('Invalid XML content');
+          console.error('Parser error:', parserError.textContent);
+          throw new Error('Invalid XML - make sure you copied the complete RSS feed');
         }
         
         const items = xml.querySelectorAll('item');
         
         if (items.length === 0) {
-          throw new Error('No books found in RSS feed');
+          throw new Error('No books found - make sure this is a Goodreads RSS feed');
         }
         
         allBooks = [];
@@ -344,8 +345,14 @@
       const libraryKey = libraryUrl.replace(/https?:\/\//, '').split('.')[0];
       const results = [];
       
-      // Use CORS proxy to bypass CORS restrictions
-      const corsProxy = 'https://api.allorigins.win/raw?url=';
+      // Try multiple CORS proxy options
+      const corsProxies = [
+        'https://corsproxy.io/?',
+        'https://api.codetabs.com/v1/proxy?quest=',
+        ''  // Direct attempt as fallback
+      ];
+      
+      let proxyIndex = 0;
       
       for (const book of filteredBooks) {
         document.getElementById('status').querySelector('p').textContent = 
@@ -355,11 +362,27 @@
           const searchQuery = encodeURIComponent(book.title + ' ' + book.author);
           const searchApiUrl = 'https://thunder.api.overdrive.com/v2/libraries/' + libraryKey + 
             '/media?query=' + searchQuery + '&perPage=5';
-          const searchUrl = corsProxy + encodeURIComponent(searchApiUrl);
           
-          const searchResponse = await fetch(searchUrl);
+          let searchResponse = null;
+          let usedProxy = '';
           
-          if (!searchResponse.ok) throw new Error('Search failed');
+          // Try proxies in order until one works
+          for (let i = 0; i < corsProxies.length; i++) {
+            try {
+              const proxyUrl = corsProxies[i] + (corsProxies[i] ? encodeURIComponent(searchApiUrl) : searchApiUrl);
+              searchResponse = await fetch(proxyUrl);
+              if (searchResponse.ok) {
+                usedProxy = corsProxies[i];
+                break;
+              }
+            } catch (e) {
+              console.log('Proxy ' + i + ' failed, trying next...');
+            }
+          }
+          
+          if (!searchResponse || !searchResponse.ok) {
+            throw new Error('All proxies failed - try a different library or wait a bit');
+          }
           
           const searchData = await searchResponse.json();
           
@@ -375,8 +398,8 @@
           const media = searchData.items[0];
           const availApiUrl = 'https://thunder.api.overdrive.com/v2/libraries/' + libraryKey + 
             '/media/' + media.id + '/availability';
-          const availUrl = corsProxy + encodeURIComponent(availApiUrl);
-          const availResponse = await fetch(availUrl);
+          const availProxyUrl = usedProxy + (usedProxy ? encodeURIComponent(availApiUrl) : availApiUrl);
+          const availResponse = await fetch(availProxyUrl);
           
           if (!availResponse.ok) throw new Error('Availability check failed');
           
