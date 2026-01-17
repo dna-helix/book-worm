@@ -2,126 +2,234 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#4F46E5">
-  <meta name="description" content="Check Libby wait times for your Goodreads books">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Libby Checker">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Libby Checker</title>
-  <link rel="manifest" href="manifest.json">
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    .animate-spin { animation: spin 1s linear infinite; }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  </style>
 </head>
-<body>
-  <div id="root"></div>
-  
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen p-4">
+  <div id="app" class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-lg p-4 mb-4">
+      <h1 class="text-xl font-bold mb-4">Libby Checker</h1>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-2">Library OverDrive URL</label>
+          <input 
+            type="text" 
+            id="libraryUrl"
+            placeholder="yourlibrary.overdrive.com"
+            class="w-full px-4 py-3 border rounded-lg"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-2">Import Books</label>
+          <div class="flex gap-2 mb-2">
+            <button id="csvTab" class="flex-1 px-4 py-2 rounded-lg bg-indigo-600 text-white">CSV Upload</button>
+            <button id="rssTab" class="flex-1 px-4 py-2 rounded-lg bg-gray-200 text-gray-700">RSS Feed</button>
+          </div>
+          
+          <div id="csvUpload">
+            <input 
+              type="file" 
+              id="csvFile"
+              accept=".csv"
+              class="w-full px-4 py-3 border rounded-lg"
+            />
+          </div>
+          
+          <div id="rssUpload" class="hidden">
+            <textarea 
+              id="rssContent"
+              placeholder="Paste your Goodreads RSS feed content here...&#10;&#10;To get it:&#10;1. Go to your Goodreads shelf&#10;2. Find the RSS link at the bottom&#10;3. Open it in your browser&#10;4. Copy all the XML content (Ctrl+A, Ctrl+C)&#10;5. Paste it here"
+              rows="6"
+              class="w-full px-4 py-3 border rounded-lg font-mono text-sm"
+            ></textarea>
+            <button 
+              id="parseRssBtn"
+              class="mt-2 w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            >
+              Parse RSS Feed
+            </button>
+          </div>
+          
+          <p id="bookCount" class="text-sm text-gray-600 mt-2"></p>
+        </div>
+
+        <div id="shelfFilters" class="hidden">
+          <label class="block text-sm font-medium mb-2">Filter by Shelf</label>
+          <div id="shelfButtons" class="flex flex-wrap gap-2"></div>
+          <p id="filterCount" class="text-sm text-gray-600 mt-2"></p>
+        </div>
+
+        <button 
+          id="checkBtn"
+          class="w-full px-6 py-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:bg-gray-300"
+          disabled
+        >
+          Check Libby Availability
+        </button>
+
+        <button 
+          id="clearBtn"
+          class="w-full px-6 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+        >
+          Clear All Data
+        </button>
+      </div>
+
+      <div id="status" class="mt-4 p-4 bg-blue-50 rounded-lg hidden">
+        <p class="text-sm text-blue-800"></p>
+      </div>
+    </div>
+
+    <div id="results" class="bg-white rounded-lg shadow-lg p-4 hidden">
+      <h2 class="text-lg font-bold mb-4">Results</h2>
+      <div id="resultsList" class="space-y-3"></div>
+    </div>
+  </div>
+
   <script>
-    const React = window.React;
-    const ReactDOM = window.ReactDOM;
-    const { useState, useEffect } = React;
-    const h = React.createElement;
+    let allBooks = [];
+    let filteredBooks = [];
+    let availableShelves = [];
+    let selectedShelves = [];
+    let importMethod = 'csv';
 
-    // Icon components
-    const BookIcon = () => h('svg', { className: 'w-6 h-6', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
-      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' })
-    );
-    
-    const UploadIcon = () => h('svg', { className: 'w-5 h-5', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
-      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12' })
-    );
-    
-    const FilterIcon = () => h('svg', { className: 'w-4 h-4', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
-      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z' })
-    );
-    
-    const TrashIcon = () => h('svg', { className: 'w-5 h-5', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
-      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16' })
-    );
-    
-    const LoaderIcon = () => h('svg', { className: 'w-5 h-5 animate-spin', fill: 'none', viewBox: '0 0 24 24' },
-      h('circle', { className: 'opacity-25', cx: 12, cy: 12, r: 10, stroke: 'currentColor', strokeWidth: 4 }),
-      h('path', { className: 'opacity-75', fill: 'currentColor', d: 'M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z' })
-    );
-    
-    const CheckIcon = () => h('svg', { className: 'w-4 h-4', fill: 'currentColor', viewBox: '0 0 20 20' },
-      h('path', { fillRule: 'evenodd', d: 'M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' })
-    );
-    
-    const ClockIcon = () => h('svg', { className: 'w-4 h-4', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
-      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' })
-    );
-    
-    const AlertIcon = () => h('svg', { className: 'w-4 h-4', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
-      h('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' })
-    );
+    // Load saved data
+    const saved = localStorage.getItem('libbyCheckerData');
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        document.getElementById('libraryUrl').value = data.libraryUrl || '';
+        allBooks = data.books || [];
+        filteredBooks = allBooks;
+        availableShelves = data.shelves || [];
+        updateUI();
+      } catch (e) {
+        console.error('Failed to load saved data');
+      }
+    }
 
-    function App() {
-      const [libraryUrl, setLibraryUrl] = useState('');
-      const [books, setBooks] = useState([]);
-      const [allBooks, setAllBooks] = useState([]);
-      const [availableShelves, setAvailableShelves] = useState([]);
-      const [selectedShelves, setSelectedShelves] = useState([]);
-      const [checking, setChecking] = useState(false);
-      const [currentBook, setCurrentBook] = useState('');
-      const [results, setResults] = useState([]);
-      const [installPrompt, setInstallPrompt] = useState(null);
+    // Tab switching
+    document.getElementById('csvTab').addEventListener('click', function() {
+      importMethod = 'csv';
+      this.className = 'flex-1 px-4 py-2 rounded-lg bg-indigo-600 text-white';
+      document.getElementById('rssTab').className = 'flex-1 px-4 py-2 rounded-lg bg-gray-200 text-gray-700';
+      document.getElementById('csvUpload').classList.remove('hidden');
+      document.getElementById('rssUpload').classList.add('hidden');
+    });
 
-      useEffect(() => {
-        const saved = localStorage.getItem('libbyCheckerData');
-        if (saved) {
-          try {
-            const data = JSON.parse(saved);
-            setLibraryUrl(data.libraryUrl || '');
-            setAllBooks(data.books || []);
-            setBooks(data.books || []);
-            setAvailableShelves(data.shelves || []);
-          } catch (e) {
-            console.error('Load failed');
+    document.getElementById('rssTab').addEventListener('click', function() {
+      importMethod = 'rss';
+      this.className = 'flex-1 px-4 py-2 rounded-lg bg-indigo-600 text-white';
+      document.getElementById('csvTab').className = 'flex-1 px-4 py-2 rounded-lg bg-gray-200 text-gray-700';
+      document.getElementById('csvUpload').classList.add('hidden');
+      document.getElementById('rssUpload').classList.remove('hidden');
+    });
+
+    // Save data
+    function saveData() {
+      const data = {
+        libraryUrl: document.getElementById('libraryUrl').value,
+        books: allBooks,
+        shelves: availableShelves
+      };
+      localStorage.setItem('libbyCheckerData', JSON.stringify(data));
+    }
+
+    // Parse RSS
+    document.getElementById('parseRssBtn').addEventListener('click', function() {
+      const xmlContent = document.getElementById('rssContent').value;
+      if (!xmlContent.trim()) {
+        alert('Please paste RSS feed content');
+        return;
+      }
+
+      try {
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(xmlContent, 'text/xml');
+        
+        const parserError = xml.querySelector('parsererror');
+        if (parserError) {
+          throw new Error('Invalid XML content');
+        }
+        
+        const items = xml.querySelectorAll('item');
+        
+        if (items.length === 0) {
+          throw new Error('No books found in RSS feed');
+        }
+        
+        allBooks = [];
+        const shelves = new Set();
+        
+        items.forEach(item => {
+          const titleElement = item.querySelector('title');
+          const title = titleElement ? titleElement.textContent : '';
+          
+          const descElement = item.querySelector('description');
+          const description = descElement ? descElement.textContent : '';
+          
+          let author = '';
+          const authorMatch = description.match(/author:\s*([^\n<]+)/i);
+          if (authorMatch) {
+            author = authorMatch[1].trim();
           }
-        }
-
-        window.addEventListener('beforeinstallprompt', (ev) => {
-          ev.preventDefault();
-          setInstallPrompt(ev);
+          
+          if (!author) {
+            const authorElement = item.querySelector('author_name');
+            author = authorElement ? authorElement.textContent : '';
+          }
+          
+          const shelvesElement = item.querySelector('user_shelves');
+          const shelfText = shelvesElement ? shelvesElement.textContent : 'to-read';
+          const bookShelves = shelfText.split(',').map(s => s.trim()).filter(s => s);
+          
+          bookShelves.forEach(shelf => shelves.add(shelf));
+          
+          if (title) {
+            const cleanTitle = title.replace(/\s*\([^)]*\)\s*$/, '').trim();
+            
+            allBooks.push({
+              title: cleanTitle,
+              author: author || 'Unknown Author',
+              shelves: bookShelves.length > 0 ? bookShelves : ['to-read']
+            });
+          }
         });
+        
+        availableShelves = Array.from(shelves).sort();
+        filteredBooks = allBooks;
+        selectedShelves = [];
+        saveData();
+        updateUI();
+        
+        alert(allBooks.length + ' books loaded from RSS feed!');
+        
+      } catch (error) {
+        console.error('RSS parsing error:', error);
+        alert('Failed to parse RSS feed: ' + error.message + '\n\nMake sure you copied the complete XML content.');
+      }
+    });
 
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('sw.js').catch(() => {});
-        }
-      }, []);
+    // Parse CSV
+    document.getElementById('csvFile').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-      const handleInstall = async () => {
-        if (installPrompt) {
-          installPrompt.prompt();
-          await installPrompt.userChoice;
-          setInstallPrompt(null);
-        }
-      };
-
-      const saveData = (booksData, shelvesData) => {
-        const data = { libraryUrl, books: booksData, shelves: shelvesData };
-        localStorage.setItem('libbyCheckerData', JSON.stringify(data));
-      };
-
-      const parseCSV = (text) => {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const text = event.target.result;
         const lines = text.split('\n');
         const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
         
-        const titleIdx = headers.findIndex(h => h === 'title');
+        const titleIdx = headers.indexOf('title');
         const authorIdx = headers.findIndex(h => h === 'author' || h === 'author l-f');
-        const isbnIdx = headers.findIndex(h => h.includes('isbn'));
-        const isbn13Idx = headers.findIndex(h => h === 'isbn13');
-        const shelfIdx = headers.findIndex(h => h === 'bookshelves');
-        const exclusiveShelfIdx = headers.findIndex(h => h === 'exclusive shelf');
+        const shelfIdx = headers.indexOf('bookshelves');
+        const exclusiveShelfIdx = headers.indexOf('exclusive shelf');
         
-        const parsed = [];
+        allBooks = [];
         const shelves = new Set();
         
         for (let i = 1; i < lines.length; i++) {
@@ -154,299 +262,206 @@
             }
             
             if (shelfIdx >= 0 && cleanValues[shelfIdx]) {
-              const additional = cleanValues[shelfIdx].split(',').map(s => s.trim()).filter(s => s && !bookShelves.includes(s));
-              bookShelves.push.apply(bookShelves, additional);
+              cleanValues[shelfIdx].split(',').forEach(s => {
+                s = s.trim();
+                if (s && !bookShelves.includes(s)) bookShelves.push(s);
+              });
             }
             
-            if (bookShelves.length === 0) {
-              bookShelves = ['to-read'];
-            }
+            if (bookShelves.length === 0) bookShelves = ['to-read'];
             
             bookShelves.forEach(shelf => shelves.add(shelf));
             
-            const isbn = cleanValues[isbn13Idx] || cleanValues[isbnIdx] || '';
-            
-            parsed.push({
+            allBooks.push({
               title: cleanValues[titleIdx],
               author: cleanValues[authorIdx] || 'Unknown',
-              isbn: isbn.replace(/[="]/g, ''),
               shelves: bookShelves
             });
           }
         }
         
-        const shelvesArray = Array.from(shelves).sort();
-        setAvailableShelves(shelvesArray);
-        setAllBooks(parsed);
-        setBooks(parsed);
-        saveData(parsed, shelvesArray);
+        availableShelves = Array.from(shelves).sort();
+        filteredBooks = allBooks;
+        selectedShelves = [];
+        saveData();
+        updateUI();
       };
+      reader.readAsText(file);
+    });
 
-      const handleFileUpload = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => parseCSV(event.target.result);
-        reader.readAsText(file);
-      };
-
-      const handleShelfToggle = (shelf) => {
-        setSelectedShelves(prev => {
-          const newSelection = prev.includes(shelf) ? prev.filter(s => s !== shelf) : prev.concat([shelf]);
-          if (newSelection.length === 0) {
-            setBooks(allBooks);
-          } else {
-            setBooks(allBooks.filter(book => book.shelves.some(s => newSelection.includes(s))));
-          }
-          return newSelection;
+    // Update UI
+    function updateUI() {
+      document.getElementById('bookCount').textContent = allBooks.length > 0 ? allBooks.length + ' books loaded' : '';
+      document.getElementById('checkBtn').disabled = allBooks.length === 0 || !document.getElementById('libraryUrl').value;
+      
+      if (availableShelves.length > 0) {
+        document.getElementById('shelfFilters').classList.remove('hidden');
+        const shelfButtons = document.getElementById('shelfButtons');
+        shelfButtons.innerHTML = '';
+        
+        availableShelves.forEach(shelf => {
+          const btn = document.createElement('button');
+          btn.textContent = shelf;
+          btn.className = 'px-3 py-2 rounded-full text-sm ' + 
+            (selectedShelves.includes(shelf) ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700');
+          btn.onclick = () => toggleShelf(shelf);
+          shelfButtons.appendChild(btn);
         });
-      };
-
-      const checkAvailability = async () => {
-        if (!libraryUrl.trim()) {
-          alert('Enter library URL');
-          return;
-        }
-        if (books.length === 0) {
-          alert('Import books first');
-          return;
-        }
-
-        setChecking(true);
-        setResults([]);
         
-        const libraryKey = libraryUrl.replace(/https?:\/\//, '').split('.')[0];
-        
-        for (const book of books) {
-          setCurrentBook(book.title + ' by ' + book.author);
-          
-          try {
-            const searchQuery = encodeURIComponent(book.title + ' ' + book.author);
-            const searchUrl = 'https://thunder.api.overdrive.com/v2/libraries/' + libraryKey + '/media?query=' + searchQuery + '&perPage=5';
-            
-            const searchResponse = await fetch(searchUrl);
-            
-            if (!searchResponse.ok) {
-              throw new Error('Search failed');
-            }
-            
-            const searchData = await searchResponse.json();
-            
-            if (!searchData.items || searchData.items.length === 0) {
-              setResults(prev => prev.concat([{
-                title: book.title,
-                author: book.author,
-                error: 'Not found in library'
-              }]));
-              continue;
-            }
-            
-            const media = searchData.items[0];
-            const availUrl = 'https://thunder.api.overdrive.com/v2/libraries/' + libraryKey + '/media/' + media.id + '/availability';
-            const availResponse = await fetch(availUrl);
-            
-            if (!availResponse.ok) {
-              throw new Error('Availability check failed');
-            }
-            
-            const availData = await availResponse.json();
-            
-            const result = {
-              title: book.title,
-              author: book.author,
-              audiobook: null,
-              ebook: null
-            };
-            
-            if (media.type) {
-              const typeId = media.type.id.toLowerCase();
-              
-              if (typeId.includes('audiobook')) {
-                result.audiobook = {
-                  available: availData.available || false,
-                  waitTime: availData.estimatedWaitDays ? Math.ceil(availData.estimatedWaitDays / 7) : 0,
-                  copies: availData.copiesOwned || 0,
-                  holds: availData.numberOfHolds || 0
-                };
-              }
-              
-              if (typeId.includes('ebook')) {
-                result.ebook = {
-                  available: availData.available || false,
-                  waitTime: availData.estimatedWaitDays ? Math.ceil(availData.estimatedWaitDays / 7) : 0,
-                  copies: availData.copiesOwned || 0,
-                  holds: availData.numberOfHolds || 0
-                };
-              }
-            }
-            
-            setResults(prev => prev.concat([result]));
-            
-          } catch (error) {
-            console.error('Error:', error);
-            setResults(prev => prev.concat([{
-              title: book.title,
-              author: book.author,
-              error: error.message
-            }]));
-          }
-          
-          await new Promise(resolve => setTimeout(resolve, 1500));
-        }
-        
-        setChecking(false);
-        setCurrentBook('');
-      };
-
-      const clearData = () => {
-        if (confirm('Clear all data?')) {
-          localStorage.removeItem('libbyCheckerData');
-          setAllBooks([]);
-          setBooks([]);
-          setAvailableShelves([]);
-          setSelectedShelves([]);
-          setResults([]);
-          setLibraryUrl('');
-        }
-      };
-
-      return h('div', { className: 'min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4' },
-        h('div', { className: 'max-w-4xl mx-auto' },
-          installPrompt && h('div', { className: 'mb-4 p-4 bg-indigo-600 text-white rounded-lg shadow-lg' },
-            h('div', { className: 'flex items-center justify-between' },
-              h('div', { className: 'flex-1' },
-                h('p', { className: 'font-medium' }, 'Install App'),
-                h('p', { className: 'text-sm opacity-90' }, 'Add to home screen')
-              ),
-              h('button', {
-                onClick: handleInstall,
-                className: 'px-4 py-2 bg-white text-indigo-600 rounded-lg font-medium'
-              }, 'Install')
-            )
-          ),
-
-          h('div', { className: 'bg-white rounded-lg shadow-lg p-4 mb-4' },
-            h('div', { className: 'flex items-center justify-between mb-4' },
-              h('div', { className: 'flex items-center gap-2' },
-                h(BookIcon),
-                h('h1', { className: 'text-xl font-bold' }, 'Libby Checker')
-              ),
-              allBooks.length > 0 && h('button', {
-                onClick: clearData,
-                className: 'p-2 text-gray-500 hover:text-red-600'
-              }, h(TrashIcon))
-            ),
-
-            h('div', { className: 'space-y-4' },
-              h('div', null,
-                h('label', { className: 'block text-sm font-medium mb-2' }, 'Library OverDrive URL'),
-                h('input', {
-                  type: 'text',
-                  placeholder: 'yourlibrary.overdrive.com',
-                  value: libraryUrl,
-                  onChange: e => setLibraryUrl(e.target.value),
-                  className: 'w-full px-4 py-3 border border-gray-300 rounded-lg'
-                })
-              ),
-
-              h('div', null,
-                h('label', { className: 'block text-sm font-medium mb-2' }, 'Upload Goodreads CSV'),
-                h('label', { className: 'flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-lg cursor-pointer hover:bg-indigo-700' },
-                  h(UploadIcon),
-                  h('span', null, 'Choose CSV File'),
-                  h('input', {
-                    type: 'file',
-                    accept: '.csv',
-                    onChange: handleFileUpload,
-                    className: 'hidden'
-                  })
-                ),
-                allBooks.length > 0 && h('p', { className: 'text-sm text-gray-600 mt-2' }, allBooks.length + ' books loaded')
-              ),
-
-              availableShelves.length > 0 && h('div', null,
-                h('label', { className: 'flex items-center gap-2 text-sm font-medium mb-2' },
-                  h(FilterIcon),
-                  'Filter by Shelf'
-                ),
-                h('div', { className: 'flex flex-wrap gap-2' },
-                  availableShelves.map(shelf =>
-                    h('button', {
-                      key: shelf,
-                      onClick: () => handleShelfToggle(shelf),
-                      className: 'px-3 py-2 rounded-full text-sm ' + (selectedShelves.includes(shelf) ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700')
-                    }, shelf)
-                  )
-                ),
-                h('p', { className: 'text-sm text-gray-600 mt-2' }, 'Showing ' + books.length + ' of ' + allBooks.length + ' books')
-              ),
-
-              h('button', {
-                onClick: checkAvailability,
-                disabled: checking || books.length === 0 || !libraryUrl,
-                className: 'w-full px-6 py-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:bg-gray-300'
-              }, checking ? 'Checking...' : 'Check Libby Availability')
-            ),
-
-            checking && currentBook && h('div', { className: 'mt-4 p-4 bg-blue-50 rounded-lg flex items-center gap-3' },
-              h(LoaderIcon),
-              h('span', { className: 'text-sm text-blue-800' }, currentBook)
-            )
-          ),
-
-          results.length > 0 && h('div', { className: 'bg-white rounded-lg shadow-lg p-4' },
-            h('h2', { className: 'text-lg font-bold mb-4' }, 'Results'),
-            h('div', { className: 'space-y-3' },
-              results.map((r, i) =>
-                h('div', { key: i, className: 'border border-gray-200 rounded-lg p-4' },
-                  h('h3', { className: 'font-semibold mb-1' }, r.title),
-                  h('p', { className: 'text-sm text-gray-600 mb-3' }, r.author),
-                  
-                  r.error ? h('div', { className: 'text-red-600 text-sm flex items-center gap-2' },
-                    h(AlertIcon),
-                    r.error
-                  ) : h('div', { className: 'space-y-2' },
-                    h('div', null,
-                      h('div', { className: 'text-xs text-gray-500 uppercase mb-1' }, 'Audiobook'),
-                      r.audiobook ? (
-                        r.audiobook.available ? h('div', { className: 'flex items-center gap-2 text-green-600' },
-                          h(CheckIcon),
-                          h('span', { className: 'text-sm font-medium' }, 'Available now')
-                        ) : r.audiobook.waitTime > 0 ? h('div', { className: 'flex items-center gap-2 text-orange-600' },
-                          h(ClockIcon),
-                          h('span', { className: 'text-sm' }, r.audiobook.waitTime + ' week wait (' + r.audiobook.holds + ' holds)')
-                        ) : h('div', { className: 'flex items-center gap-2 text-gray-500' },
-                          h(AlertIcon),
-                          h('span', { className: 'text-sm' }, 'Not available')
-                        )
-                      ) : h('div', { className: 'text-sm text-gray-400' }, 'No audiobook format')
-                    ),
-                    h('div', null,
-                      h('div', { className: 'text-xs text-gray-500 uppercase mb-1' }, 'Ebook'),
-                      r.ebook ? (
-                        r.ebook.available ? h('div', { className: 'flex items-center gap-2 text-green-600' },
-                          h(CheckIcon),
-                          h('span', { className: 'text-sm font-medium' }, 'Available now')
-                        ) : r.ebook.waitTime > 0 ? h('div', { className: 'flex items-center gap-2 text-orange-600' },
-                          h(ClockIcon),
-                          h('span', { className: 'text-sm' }, r.ebook.waitTime + ' week wait (' + r.ebook.holds + ' holds)')
-                        ) : h('div', { className: 'flex items-center gap-2 text-gray-500' },
-                          h(AlertIcon),
-                          h('span', { className: 'text-sm' }, 'Not available')
-                        )
-                      ) : h('div', { className: 'text-sm text-gray-400' }, 'No ebook format')
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      );
+        document.getElementById('filterCount').textContent = 
+          'Showing ' + filteredBooks.length + ' of ' + allBooks.length + ' books';
+      }
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(h(App));
+    // Toggle shelf filter
+    function toggleShelf(shelf) {
+      if (selectedShelves.includes(shelf)) {
+        selectedShelves = selectedShelves.filter(s => s !== shelf);
+      } else {
+        selectedShelves.push(shelf);
+      }
+      
+      if (selectedShelves.length === 0) {
+        filteredBooks = allBooks;
+      } else {
+        filteredBooks = allBooks.filter(book => 
+          book.shelves.some(s => selectedShelves.includes(s))
+        );
+      }
+      
+      updateUI();
+    }
+
+    // Check availability
+    document.getElementById('checkBtn').addEventListener('click', async function() {
+      const libraryUrl = document.getElementById('libraryUrl').value.trim();
+      if (!libraryUrl || filteredBooks.length === 0) return;
+
+      document.getElementById('checkBtn').disabled = true;
+      document.getElementById('status').classList.remove('hidden');
+      document.getElementById('results').classList.add('hidden');
+      
+      const libraryKey = libraryUrl.replace(/https?:\/\//, '').split('.')[0];
+      const results = [];
+      
+      // Use CORS proxy to bypass CORS restrictions
+      const corsProxy = 'https://api.allorigins.win/raw?url=';
+      
+      for (const book of filteredBooks) {
+        document.getElementById('status').querySelector('p').textContent = 
+          'Checking: ' + book.title + ' by ' + book.author;
+        
+        try {
+          const searchQuery = encodeURIComponent(book.title + ' ' + book.author);
+          const searchApiUrl = 'https://thunder.api.overdrive.com/v2/libraries/' + libraryKey + 
+            '/media?query=' + searchQuery + '&perPage=5';
+          const searchUrl = corsProxy + encodeURIComponent(searchApiUrl);
+          
+          const searchResponse = await fetch(searchUrl);
+          
+          if (!searchResponse.ok) throw new Error('Search failed');
+          
+          const searchData = await searchResponse.json();
+          
+          if (!searchData.items || searchData.items.length === 0) {
+            results.push({
+              title: book.title,
+              author: book.author,
+              error: 'Not found in library catalog'
+            });
+            continue;
+          }
+          
+          const media = searchData.items[0];
+          const availApiUrl = 'https://thunder.api.overdrive.com/v2/libraries/' + libraryKey + 
+            '/media/' + media.id + '/availability';
+          const availUrl = corsProxy + encodeURIComponent(availApiUrl);
+          const availResponse = await fetch(availUrl);
+          
+          if (!availResponse.ok) throw new Error('Availability check failed');
+          
+          const availData = await availResponse.json();
+          
+          const result = {
+            title: book.title,
+            author: book.author,
+            available: availData.available || false,
+            waitWeeks: availData.estimatedWaitDays ? Math.ceil(availData.estimatedWaitDays / 7) : 0,
+            holds: availData.numberOfHolds || 0,
+            copies: availData.copiesOwned || 0,
+            type: media.type ? media.type.id : 'unknown'
+          };
+          
+          results.push(result);
+          
+        } catch (error) {
+          console.error('Error checking:', book.title, error);
+          results.push({
+            title: book.title,
+            author: book.author,
+            error: 'Check failed: ' + error.message
+          });
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+      
+      displayResults(results);
+      document.getElementById('status').classList.add('hidden');
+      document.getElementById('checkBtn').disabled = false;
+    });
+
+    // Display results
+    function displayResults(results) {
+      const resultsList = document.getElementById('resultsList');
+      resultsList.innerHTML = '';
+      
+      results.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'border border-gray-200 rounded-lg p-4';
+        
+        let html = '<h3 class="font-semibold">' + r.title + '</h3>';
+        html += '<p class="text-sm text-gray-600 mb-2">' + r.author + '</p>';
+        
+        if (r.error) {
+          html += '<p class="text-red-600 text-sm">⚠ ' + r.error + '</p>';
+        } else {
+          if (r.available) {
+            html += '<p class="text-green-600 text-sm font-medium">✓ Available now</p>';
+          } else if (r.waitWeeks > 0) {
+            html += '<p class="text-orange-600 text-sm">⏱ ' + r.waitWeeks + ' week wait</p>';
+            html += '<p class="text-xs text-gray-500">' + r.holds + ' holds on ' + r.copies + ' copies</p>';
+          } else {
+            html += '<p class="text-gray-500 text-sm">✗ Not currently available</p>';
+          }
+          html += '<p class="text-xs text-gray-400 mt-1">Format: ' + r.type + '</p>';
+        }
+        
+        div.innerHTML = html;
+        resultsList.appendChild(div);
+      });
+      
+      document.getElementById('results').classList.remove('hidden');
+    }
+
+    // Clear data
+    document.getElementById('clearBtn').addEventListener('click', function() {
+      if (confirm('Clear all data?')) {
+        localStorage.removeItem('libbyCheckerData');
+        allBooks = [];
+        filteredBooks = [];
+        availableShelves = [];
+        selectedShelves = [];
+        document.getElementById('libraryUrl').value = '';
+        document.getElementById('csvFile').value = '';
+        document.getElementById('shelfFilters').classList.add('hidden');
+        document.getElementById('results').classList.add('hidden');
+        updateUI();
+      }
+    });
+
+    // Update check button when library URL changes
+    document.getElementById('libraryUrl').addEventListener('input', updateUI);
   </script>
 </body>
 </html>
